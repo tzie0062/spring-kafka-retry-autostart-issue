@@ -29,14 +29,14 @@ import static org.awaitility.Awaitility.await;
 @Slf4j
 @Testcontainers
 @SpringBootTest
-@Import(AutoStartTrueTest.TestConfig.class)
-class AutoStartTrueTest {
+@Import(KafkaRetryApplicationTest.TestConfig.class)
+class KafkaRetryApplicationTest {
     @Container
     @ServiceConnection
     static KafkaContainer kafka = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.6.1"))
             .withStartupTimeout(Duration.ofSeconds(20L));
     @Autowired
-    protected FooKafkaListener fooKafkaListener;
+    protected KafkaRetryApplication.FooKafkaListener fooKafkaListener;
     @Autowired
     protected KafkaTemplate<String, String> kafkaTemplate;
     @Value("${kafka.topic.foo}")
