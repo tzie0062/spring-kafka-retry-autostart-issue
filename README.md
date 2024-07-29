@@ -18,3 +18,9 @@ Running:
 ```
 will launch the `@KafkaListener` with `autoStartup` disabled. An `@EventListener` is used to start the listener once the application has started.
 Here the test will not pass, since no retries are happening.
+
+## Fix
+This [answer](https://stackoverflow.com/a/78807810/7605085) solved the problem: retry & dlq consumers are also `MessageListenerContainers`
+that need to be started as well.
+
+Code is now updated and working as expected.

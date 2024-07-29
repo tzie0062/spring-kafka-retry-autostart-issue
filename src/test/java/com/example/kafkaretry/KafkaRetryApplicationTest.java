@@ -21,6 +21,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
 import java.time.Duration;
+import java.util.Collection;
 
 import static com.example.kafkaretry.KafkaRetryApplication.LISTENER_ID_FOO;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -57,11 +58,11 @@ class KafkaRetryApplicationTest {
 
         @EventListener(ApplicationReadyEvent.class)
         public void startKafkaListener() {
-            MessageListenerContainer listenerContainer = endpointRegistry.getListenerContainer(LISTENER_ID_FOO);
-            if (!listenerContainer.isRunning()) {
-                log.info("Listener not running - starting.");
-                listenerContainer.start();
-            }
+            Collection<MessageListenerContainer> allListenerContainers = endpointRegistry.getAllListenerContainers();
+            allListenerContainers.stream()
+                    .filter(c -> (c.getMainListenerId() != null && LISTENER_ID_FOO.equals(c.getMainListenerId()))
+                            || (c.getMainListenerId() == null && LISTENER_ID_FOO.equals(c.getListenerId())))
+                    .forEach(MessageListenerContainer::start);
         }
     }
 
